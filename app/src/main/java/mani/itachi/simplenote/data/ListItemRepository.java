@@ -16,8 +16,8 @@ public class ListItemRepository {
         this.listItemDao=listItemDao;
     }
 
-    public LiveData<List<ListItem>> getListItems(){
-        return listItemDao.getListItems();
+    public LiveData<List<ListItem>> getAllListItems(){
+        return listItemDao.getAllListItems();
     }
 
     public LiveData<ListItem> getListItemById(@NonNull String itemId){
