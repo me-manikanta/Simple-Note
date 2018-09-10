@@ -11,6 +11,7 @@ import dagger.Provides;
 import mani.itachi.simplenote.data.ListItemDao;
 import mani.itachi.simplenote.data.ListItemDatabase;
 import mani.itachi.simplenote.data.ListItemRepository;
+import mani.itachi.simplenote.viewmodel.CustomViewModelFactory;
 
 @Module
 public class DatabaseModule {

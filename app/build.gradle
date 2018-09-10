@@ -43,6 +43,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
     implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     implementation "com.github.JakeWharton:ViewPagerIndicator:$rootProject.viewPagerIndicatorVersion"
+    implementation "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterKnifeVersion"
     testImplementation 'org.mockito:mockito-core:2.8.9'
     testImplementation 'junit:junit:4.12'
 }

@@ -8,6 +8,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,9 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import mani.itachi.simplenote.R;
 import mani.itachi.simplenote.SimpleNoteApplication;
@@ -45,7 +49,7 @@ public class ListFragment extends Fragment {
     private List<ListItem> listOfData;
 
     private LayoutInflater layoutInflater;
-    private RecyclerView recyclerView;
+    @BindView(R.id.rec_list_activity) RecyclerView recyclerView;
     private CustomAdapter adapter;
 
     @Inject
@@ -56,8 +60,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((SimpleNoteApplication) Objects.requireNonNull(getActivity())
-                .getApplication())
+        ((SimpleNoteApplication) getActivity().getApplication())
                 .getApplicationComponent()
                 .inject(this);
     }
@@ -79,39 +82,43 @@ public class ListFragment extends Fragment {
         });
     }
 
+
+
     public static ListFragment newInstance() {
         return new ListFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list, container, false);
 
-        recyclerView = (RecyclerView) v.findViewById(R.id.rec_list_activity);
-        layoutInflater = getActivity().getLayoutInflater();
+        layoutInflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.tlb_list_activity);
 
         toolbar.setTitle(R.string.title_toolbar);
         toolbar.setLogo(R.drawable.ic_view_list_white_24dp);
         toolbar.setTitleMarginStart(72);
-
-        FloatingActionButton fabulous = (FloatingActionButton) v.findViewById(R.id.fab_create_new_item);
-
-        fabulous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCreateActivity();
-            }
-        });
-
+        ButterKnife.bind(this,v);
         return v;
+    }
+
+    @OnClick(R.id.fab_create_new_item)
+    public void OnClick(){
+        startCreateActivity();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        listItemCollectionViewModel.getAllListItems().observe(this, new Observer<List<ListItem>>() {
+            @Override
+            public void onChanged(@Nullable List<ListItem> listItems) {
+                if(ListFragment.this.listOfData == null){
+                    setListData(listItems);
+                }
+            }
+        });
     }
 
     @Override
@@ -182,7 +189,8 @@ public class ListFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
+    public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
+        @NonNull
         @Override
         public CustomAdapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = layoutInflater.inflate(R.layout.item_data, parent, false);
@@ -212,44 +220,35 @@ public class ListFragment extends Fragment {
             return listOfData.size();
         }
 
-        class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        class CustomViewHolder extends RecyclerView.ViewHolder{
 
-            private CircleImageView coloredCircle;
-            private TextView dateAndTime;
-            private TextView message;
-            private ViewGroup container;
-            private ProgressBar loading;
+            @BindView(R.id.imv_list_item_circle) CircleImageView coloredCircle;
+            @BindView(R.id.lbl_date_and_time) TextView dateAndTime;
+            @BindView(R.id.lbl_message) TextView message;
+            @BindView(R.id.pro_item_data) ProgressBar loading;
 
             private CustomViewHolder(View itemView) {
                 super(itemView);
-                this.coloredCircle = (CircleImageView) itemView.findViewById(R.id.imv_list_item_circle);
-                this.dateAndTime = (TextView) itemView.findViewById(R.id.lbl_date_and_time);
-                this.message = (TextView) itemView.findViewById(R.id.lbl_message);
-                this.loading = (ProgressBar) itemView.findViewById(R.id.pro_item_data);
-
-                this.container = (ViewGroup) itemView.findViewById(R.id.root_list_item);
-                this.container.setOnClickListener(this);
+                ButterKnife.bind(this,itemView);
             }
 
-            @Override
+            @OnClick(R.id.root_list_item)
             public void onClick(View v) {
                 ListItem listItem = listOfData.get(
                         this.getAdapterPosition()
                 );
-
                 startDetailActivity(listItem.getItemId(), v);
-
             }
         }
 
     }
 
     private ItemTouchHelper.Callback createHelperCallback() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
+        return new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+            public boolean onMove(RecyclerView recyclerView1, RecyclerView.ViewHolder viewHolder,
                                   RecyclerView.ViewHolder target) {
                 return false;
             }
@@ -267,9 +266,5 @@ public class ListFragment extends Fragment {
 
             }
         };
-        return simpleItemTouchCallback;
     }
-}
-
-
 }

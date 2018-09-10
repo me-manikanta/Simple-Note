@@ -10,7 +10,7 @@ public class CustomViewModelFactory implements ViewModelProvider.Factory{
 
     private final ListItemRepository listItemRepository;
 
-    CustomViewModelFactory(ListItemRepository listItemRepository){
+    public CustomViewModelFactory(ListItemRepository listItemRepository){
         this.listItemRepository=listItemRepository;
     }
 

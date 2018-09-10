@@ -20,9 +20,9 @@ public class CreateActivity extends BaseActivity {
 
         CreateFragment createFragment = (CreateFragment) fragmentManager.findFragmentByTag(CREATE_FRAGMENT);
 
-        if(createFragment!=null) createFragment = CreateFragment.newInstance();
+        if(createFragment==null) createFragment = CreateFragment.newInstance();
 
-        addFragmentToActivity(fragmentManager, createFragment, R.id.root_activity_list, CREATE_FRAGMENT);
+        addFragmentToActivity(fragmentManager, createFragment, R.id.root_activity_create, CREATE_FRAGMENT);
 
     }
 }

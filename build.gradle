@@ -42,6 +42,7 @@ ext {
     circleImageViewVersion = '2.2.0'
     viewPagerIndicatorVersion = '2.4.1'
     daggerVersion = '2.16'
+    butterKnifeVersion = '8.8.1'
 
     //android
     supportLibraryVersion = '27.1.1'
