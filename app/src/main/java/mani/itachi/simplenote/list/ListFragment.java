@@ -111,14 +111,6 @@ public class ListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        listItemCollectionViewModel.getAllListItems().observe(this, new Observer<List<ListItem>>() {
-            @Override
-            public void onChanged(@Nullable List<ListItem> listItems) {
-                if(ListFragment.this.listOfData == null){
-                    setListData(listItems);
-                }
-            }
-        });
     }
 
     @Override
